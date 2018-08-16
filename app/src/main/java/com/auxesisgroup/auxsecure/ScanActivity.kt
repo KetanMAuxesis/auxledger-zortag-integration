@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.google.zxing.Result
 import me.dm7.barcodescanner.zxing.ZXingScannerView
+import org.jetbrains.anko.startActivity
 
 
 class ScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
@@ -22,7 +23,7 @@ class ScanActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         val itemCode = "${result?.text?.takeLast(8)}"
 
         finish()
-        Log.e("Item Code: ", itemCode)
+        startActivity<ActionsActivity>("itemCode" to itemCode)
     }
 
     public override fun onResume() {

@@ -21,7 +21,25 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    buildTypes.each {
+        it.buildConfigField 'String', 'ZORHEADER', "\""+getZorHeader()+"\""
+        it.buildConfigField 'String', 'ZORAPI', "\""+getZorApi()+"\""
+    }
 }
+
+def getZorHeader() {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    return properties.getProperty("zortagHeader")
+}
+
+def getZorApi() {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    return properties.getProperty("zortagUrl")
+}
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -49,4 +67,17 @@ dependencies {
 
     // MultiDex
     implementation 'com.android.support:multidex:1.0.3'
+
+    // ViewPager
+    implementation 'com.github.HuanHaiLiuXin:CoolViewPager:v1.0.0'
+
+    // RxJava & RxAndroid
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.10'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+
+    // Retrofit & Interceptor
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-moshi:2.4.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
 }
