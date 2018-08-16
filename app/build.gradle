@@ -80,4 +80,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-moshi:2.4.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
+
+    // Web3 Java Ethereum Ðapp API
+    implementation 'org.web3j:core:3.1.1-android'
 }
