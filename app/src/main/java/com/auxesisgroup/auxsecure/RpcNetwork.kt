@@ -8,17 +8,13 @@ import org.web3j.protocol.Web3jFactory
 import org.web3j.protocol.http.HttpService
 import java.io.File
 
-// TODO("Add Auxledger Node Url to BuildConfig")
-private var auxLedgerNodeUrl = ""
-
-private var web3j = Web3jFactory.build(HttpService(auxLedgerNodeUrl))
+private var web3j = Web3jFactory.build(HttpService(BuildConfig.AUXLEDGERNODEURL))
 
 private var gasPrice: Long = 21000000000
 private var gasLimit: Long = 4712388
 
-// TODO("Add Private Key to BuildConfig")
-//private var privateKey = BuildConfig.PRIVATEKEY
-//private var metamaskCreds = Credentials.create(privateKey)
+private var privateKey = BuildConfig.PRIVATEKEY
+private var metamaskCreds = Credentials.create(privateKey)
 
 fun getWeb3J(): Web3j = web3j
 
