@@ -101,6 +101,22 @@ object WebService {
                 )
     }
 
+    fun addItem(clientId: String, itemCode: String, itemUpdate: ItemUpdate, cb: ApiCallback) {
+        apiRequest(getService().pushItemInfo(clientId, itemCode, itemUpdate))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { res ->
+                            /*cb.onResponse(res)*/
+                            d("Response", res.toJSONLike())
+                        },
+                        { err ->
+                            cb.onError(err)
+                            e("Error", err.toJSONLike())
+                        }
+                )
+    }
+
     fun addItemFirst(clientId: String, itemCode: String, itemUpdate: ItemUpdate) : Observable<Item> {
         return apiRequest(getService().pushItemInfo(clientId, itemCode, itemUpdate))
     }

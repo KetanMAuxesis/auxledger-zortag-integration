@@ -25,6 +25,8 @@ import kotlin.properties.Delegates
 
 class ActionsActivity: AppCompatActivity(), ApiCallback {
 
+    private val explorerUrl = "https://testnet.auxledger.org/#/transaction/"
+
     private val clientId = 100023
     private var contractAddress = ""
     private var contractTxHash = ""
@@ -199,7 +201,7 @@ class ActionsActivity: AppCompatActivity(), ApiCallback {
                             showProgressBar()
                             WebService.updateItem("$clientId", itemCode, itemUpdate, this@ActionsActivity)
                             isUpdateCall = true
-                            TODO("Write function to push details to SC")
+                            //TODO("Write function to push details to SC")
                         }
                     }
                 }
@@ -208,14 +210,14 @@ class ActionsActivity: AppCompatActivity(), ApiCallback {
 
         btnViewDetails.onClick {
             showProgressBar()
-            TODO("Write function to fetch details from SC")
+            //TODO("Write function to fetch details from SC")
         }
 
         if (contractAddress.contains("0x")) {
             btnViewDetailsInitial.visibility = View.VISIBLE
             btnViewDetailsInitial.onClick {
                 showProgressBar()
-                TODO("Write function to fetch details from SC")
+                //TODO("Write function to fetch details from SC")
             }
         }
     }
@@ -257,7 +259,44 @@ class ActionsActivity: AppCompatActivity(), ApiCallback {
                             }
 
                         }
-                        else -> TODO("Write function to deploy SC")
+                        else -> deployAuxSecureSC(clientId.toBigInteger(), itemCode.toBigInteger())
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                        { scRes ->
+                                            dismissProgressBar()
+                                            contractAddress = scRes.contractAddress
+                                            contractTxHash = scRes.transactionReceipt.transactionHash
+
+                                            alert {
+                                                title = "Added Successfully to Blockchain"
+                                                message = "Contract Address : $contractAddress\n\nTxHash : $contractTxHash"
+                                                customView {
+                                                    verticalLayout {
+                                                        padding = dip(20)
+                                                        button("View on Auxledger Blockchain") {
+                                                            padding = dip(2)
+                                                            textSize = sp(8).toFloat()
+                                                            textColor = Color.WHITE
+                                                            background = ContextCompat.getDrawable(ctx, R.drawable.button_rounded_blue)
+                                                            onClick { browse("$explorerUrl$contractTxHash") }
+                                                        }
+                                                    }
+                                                }
+
+                                            }.show()
+                                            Log.d("Contract Address", contractAddress)
+                                            Log.d("TxHash", scRes.transactionReceipt.transactionHash)
+                                            Log.d("TxHash", "${scRes.transactionReceipt}")
+
+                                            val updatedItemUpdate = itemUpdate.copy(details = listOf(Detail("scAddress", contractAddress),
+                                                    Detail("scTxHash", contractTxHash)))
+                                            WebService.addItem("$clientId", itemCode, updatedItemUpdate, this@ActionsActivity)
+                                        },
+                                        { err ->
+                                            Log.e("Error", err.toJSONLike())
+                                        }
+                                )
                     }
                 }
                 else -> alert {
