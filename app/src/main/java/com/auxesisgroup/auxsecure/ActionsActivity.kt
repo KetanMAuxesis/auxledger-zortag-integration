@@ -242,14 +242,144 @@ class ActionsActivity: AppCompatActivity(), ApiCallback {
 
         btnViewDetails.onClick {
             showProgressBar()
-            //TODO("Write function to fetch details from SC")
+            getItemDetails(contractAddress)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            { res ->
+                                dismissProgressBar()
+                                alert {
+                                    customView {
+                                        scrollView {
+                                            verticalLayout {
+                                                padding = dip(20)
+                                                textView("Data from Blockchain") {
+                                                    typeface = DEFAULT_BOLD
+                                                    textColor = Color.BLUE
+                                                    textSize = sp(8).toFloat()
+                                                }
+                                                space().lparams(height = dip(6))
+                                                textView("Item Code: ${res?.value2}") {textSize = sp(6).toFloat()}
+                                                textView("Item Name: ${res?.value3}") {textSize = sp(6).toFloat()}
+                                                textView("Merchant Name: ${res?.value4}") {textSize = sp(6).toFloat()}
+                                                textView("URL: ${res?.value5}") {textSize = sp(6).toFloat()}
+                                                textView("Details: ${res?.value6}") {textSize = sp(6).toFloat()}
+
+                                                space().lparams(height = dip(30))
+
+                                                textView("Data from ZorSecure") {
+                                                    typeface = DEFAULT_BOLD
+                                                    textColor = Color.parseColor("#008000")
+                                                    textSize = sp(8).toFloat()
+                                                }
+                                                space().lparams(height = dip(6))
+                                                textView("Item Code: ${res?.value2}") {textSize = sp(6).toFloat()}
+                                                textView("Item Name: ${itemUpdate.name}") {textSize = sp(6).toFloat()}
+                                                textView("Merchant Name: ${itemUpdate.message}") {textSize = sp(6).toFloat()}
+                                                textView("URL: ${itemUpdate.link.url}") {textSize = sp(6).toFloat()}
+                                                textView("Details: ${itemUpdate.details[2].content}") {textSize = sp(6).toFloat()}
+
+                                                space().lparams(height = dip(30))
+
+                                                textView("Contract Address : $contractAddress") {
+                                                    textSize = sp(6).toFloat()
+                                                }
+                                                space().lparams(height = dip(8))
+                                                textView("Contract TxHash : $contractTxHash") {
+                                                    textSize = sp(6).toFloat()
+                                                }
+
+                                                space().lparams(height = dip(16))
+                                                button("View on Auxledger Blockchain") {
+                                                    padding = dip(2)
+                                                    textSize = sp(8).toFloat()
+                                                    textColor = Color.WHITE
+                                                    background = ContextCompat.getDrawable(ctx, R.drawable.button_rounded_blue)
+                                                    onClick { browse("$explorerUrl$contractTxHash") }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }.show()
+                                Log.d("Item Details", res.toString())
+                            },
+                            { err ->
+                                toast("Error: Missing details. Try adding details first.")
+                                Log.e("Error", err.toJSONLike())
+                            }
+                    )
         }
 
         if (contractAddress.contains("0x")) {
             btnViewDetailsInitial.visibility = View.VISIBLE
             btnViewDetailsInitial.onClick {
                 showProgressBar()
-                //TODO("Write function to fetch details from SC")
+                getItemDetails(contractAddress)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                { res ->
+                                    dismissProgressBar()
+                                    alert {
+                                        customView {
+                                            scrollView {
+                                                verticalLayout {
+                                                    padding = dip(20)
+                                                    textView("Data from Blockchain") {
+                                                        typeface = DEFAULT_BOLD
+                                                        textColor = Color.BLUE
+                                                        textSize = sp(8).toFloat()
+                                                    }
+                                                    space().lparams(height = dip(6))
+                                                    textView("Item Code: ${res?.value2}") {textSize = sp(6).toFloat()}
+                                                    textView("Item Name: ${res?.value3}") {textSize = sp(6).toFloat()}
+                                                    textView("Merchant Name: ${res?.value4}") {textSize = sp(6).toFloat()}
+                                                    textView("URL: ${res?.value5}") {textSize = sp(6).toFloat()}
+                                                    textView("Details: ${res?.value6}") {textSize = sp(6).toFloat()}
+
+                                                    space().lparams(height = dip(30))
+
+                                                    textView("Data from ZorSecure") {
+                                                        typeface = DEFAULT_BOLD
+                                                        textColor = Color.parseColor("#008000")
+                                                        textSize = sp(8).toFloat()
+                                                    }
+                                                    space().lparams(height = dip(6))
+                                                    textView("Item Code: ${res?.value2}") {textSize = sp(6).toFloat()}
+                                                    textView("Item Name: ${itemUpdate.name}") {textSize = sp(6).toFloat()}
+                                                    textView("Merchant Name: ${itemUpdate.message}") {textSize = sp(6).toFloat()}
+                                                    textView("URL: ${itemUpdate.link.url}") {textSize = sp(6).toFloat()}
+                                                    textView("Details: ${itemUpdate.details[2].content}") {textSize = sp(6).toFloat()}
+
+                                                    space().lparams(height = dip(30))
+
+                                                    textView("Contract Address : $contractAddress") {
+                                                        textSize = sp(6).toFloat()
+                                                    }
+                                                    space().lparams(height = dip(8))
+                                                    textView("Contract TxHash : $contractTxHash") {
+                                                        textSize = sp(6).toFloat()
+                                                    }
+
+                                                    space().lparams(height = dip(16))
+                                                    button("View on Auxledger Blockchain") {
+                                                        padding = dip(2)
+                                                        textSize = sp(8).toFloat()
+                                                        textColor = Color.WHITE
+                                                        background = ContextCompat.getDrawable(ctx, R.drawable.button_rounded_blue)
+                                                        onClick { browse("$explorerUrl$contractTxHash") }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }.show()
+                                    Log.d("Item Details", res.toString())
+                                },
+                                { err ->
+                                    toast("Error: Missing details. Try adding details first.")
+                                    Log.e("Error", err.toJSONLike())
+                                }
+                        )
             }
         }
     }
