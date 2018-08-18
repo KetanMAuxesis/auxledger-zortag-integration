@@ -201,7 +201,39 @@ class ActionsActivity: AppCompatActivity(), ApiCallback {
                             showProgressBar()
                             WebService.updateItem("$clientId", itemCode, itemUpdate, this@ActionsActivity)
                             isUpdateCall = true
-                            //TODO("Write function to push details to SC")
+                            setItemDetails(contractAddress, name.getInput(), merchant.getInput(), linkUrl.getInput(), content.getInput())
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(
+                                            { res ->
+                                                dismissProgressBar()
+                                                alert {
+                                                    customView {
+                                                        title = "Item Details Updated Successfully"
+                                                        verticalLayout {
+                                                            padding = dip(20)
+                                                            textView("Your transaction id is :\n${res.transactionHash}") {
+                                                                typeface = DEFAULT_BOLD
+                                                                textSize = sp(6).toFloat()
+                                                            }
+                                                            space().lparams(height = dip(16))
+
+                                                            button("View on Auxledger Blockchain") {
+                                                                textSize = sp(8).toFloat()
+                                                                textColor = Color.WHITE
+                                                                background = ContextCompat.getDrawable(ctx, R.drawable.button_rounded_blue)
+                                                                onClick { browse("$explorerUrl${res.transactionHash}") }
+                                                            }
+                                                        }
+                                                    }
+                                                    positiveButton("GO BACK") {}
+                                                }.show()
+                                                Log.d("TxHash", res.transactionHash)
+                                            },
+                                            { err ->
+                                                Log.e("Error", err.toJSONLike())
+                                            }
+                                    )
                         }
                     }
                 }
